@@ -1,0 +1,16 @@
+[project]
+name = "cop-rl"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "ipympl>=0.9.8",
+    "matplotlib>=3.10.8",
+    "numpy>=2.2.6",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.1.0",
+]
