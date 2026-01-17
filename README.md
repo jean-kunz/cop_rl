@@ -105,7 +105,23 @@ Agent make no decision, only at mercy of chance.
 ### Markov Reward Processes
 A Markov reward process is exactly like a Markov chain, except each step taken generates a reward.
 
+![](image-13.png)
 
+![alt text](image-14.png)
+
+trajectories we sample will have an associated return value.
+
+![alt text](image-15.png)
+
+Gamma (0..1) determines how important future rewards are to the agent. if close to 0, consider immediate reward only.
+
+Gamma=1 (for the rest of course for convenience)
+
+Value function: expectation over future rewards 
+
+![](image-16.png)
+
+Thanks to the law of large numbers, a rough estimate of the true value function for a state can be achieved by sampling many trajectories starting from that state, and averaging the sampled returns
 
 -----
 Tabular data about state,... vs non tabular data
