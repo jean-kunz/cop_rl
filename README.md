@@ -72,6 +72,39 @@ Can also predict the reward given a state and action pair.
 
 **actor-critic**, having both a learned policy and an estimated value function for that learned policy.
 
+## MDP
+MDP, or Markov Decision Process : is the main formalism used in Reinforcement Learning
+
+
+**fully observable MDPs** :  the current state that is given to the agent completely characterizes the environment. So the way in which the environment unfolds depends on some state, and we are told that state.”
+
+**partially observed** can be converted to MDP and so behave largely the same way
+
+Starting with:
+Markov Chains >> Markov Reward Processes >>  Markov Decision Processes
+
+### Markov chains
+![alt text](image-9.png)
+
+We don’t need to know the full history of states to know what will happen next, just the current one
+
+State transition matrix, probability of transition from a state (row) to another one (col):
+![alt text](image-10.png)
+
+A Markov Chain has **no rewards or actions yet**, it simply defines a random process that generates a set of states, each with the Markov property
+
+![alt text](image-11.png)
+
+Student MDP:
+
+![alt text](image-12.png)
+
+On can generate random set of states. Ex: ```['C1', 'C2', 'C3', 'Pub', 'C1', 'C2', 'Sleep']````
+Agent make no decision, only at mercy of chance.  
+
+### Markov Reward Processes
+A Markov reward process is exactly like a Markov chain, except each step taken generates a reward.
+
 
 
 -----
