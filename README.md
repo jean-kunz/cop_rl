@@ -123,5 +123,24 @@ Value function: expectation over future rewards
 
 Thanks to the law of large numbers, a rough estimate of the true value function for a state can be achieved by sampling many trajectories starting from that state, and averaging the sampled returns
 
+
+### Bellman equation
+
+
+
+![alt text](image-17.png)
+
+as gamma is constant:
+![alt text](image-18.png)
+![](image-19.png)
+
+
+![alt text](image-20.png)
+
+So : **value of a state s is the expectation over the immediate reward plus the discounted expected future reward***
+
+
+
+
 -----
 Tabular data about state,... vs non tabular data
