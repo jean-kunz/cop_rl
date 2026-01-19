@@ -140,7 +140,71 @@ as gamma is constant:
 So : **value of a state s is the expectation over the immediate reward plus the discounted expected future reward***
 
 
+#### How do we get that expected reward of the next state v(St+1)?
 
+![alt text](image-21.png)
+
+= sum of all state-values weighted by their probability of occurring. Many of the values in this sum will be zero, because you can only transition to some states at each step
+
+Notice that the immediate reward is no longer expressed as an expectation because it’s a constant, and the expectation of a constant is just a constant, so we can pull it out of the expectation.
+
+**Bellman equation** : expresses the state-value in terms of itself .
+
+![Nodes b1 and b2 are possible next states reachable from node a](image-22.png)
+
+we’re taking the immediate reward r and then averaging over the values of all possible successor states
+
+Self check with former value calculated iteratively:
+![alt text](image-23.png)
+
+Different way to solve it:
+
+##### Analytical solution
+![](image-24.png)
+![alt text](image-25.png)
+
+![alt text](image-26.png)
+
+Often to large to be used
+
+##### Iterative solutions
+
+Do it later
+
+
+### Markov Decision Processes (MDP)
+
+It introduces actions. The inclusion of actions means that the transition probabilities as well as the rewards must now be **conditioned on a chosen action**
+
+![alt text](image-27.png)
+
+There is now a separate state transition matrix and reward for every action
+
+![alt text](image-28.png)
+
+For this particular MDP, every action save for “Pub” is deterministic. In the case of the action “ Pub”, the agent no longer enters into the “Pub” state, but instead transitions with some probability into one of the 3 “Class” states.
+
+Why reduce the “Pub” state to an action instead? To show that actions can have both deterministic and stochastic effects on where the agent ends up in the environment.
+
+we also don’t need the “Pass” state anymore. Whereas in the MC and MRP examples we only got rewards for exiting states, we now get rewards after taking actions, so we can get the +10 reward for studying in Class 3 without needing to transition into a “Pass” state that immediately takes us to “Sleep”
+
+#### Policies
+
+Agent policy:  a function that tells the agent what action to take depending on the state (or a probability distribution to sample from). Policy can also be deterministic (no sampling)
+
+![alt text](image-29.png)
+
+Later: Choosing a policy impacts value function. Calculate value function under many policies and select policy with better value.
+
+We can reformulate any MDP into a MRP (which we know how to solve analytically). Change MDP to be action independent. 
+
+The rewards in the MDP are conditioned on which action is taken, so we need to average over all actions from a single state to get a single action-independent reward value. Each state has an expected reward for any action
+
+
+![](image-30.png)
+![alt text](image-31.png)
+
+![alt text](image-32.png)
 
 -----
 Tabular data about state,... vs non tabular data
