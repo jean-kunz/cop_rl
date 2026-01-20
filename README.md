@@ -196,6 +196,8 @@ Agent policy:  a function that tells the agent what action to take depending on 
 
 Later: Choosing a policy impacts value function. Calculate value function under many policies and select policy with better value.
 
+##### Any MDP to MRP
+
 We can reformulate any MDP into a MRP (which we know how to solve analytically). Change MDP to be action independent. 
 
 The rewards in the MDP are conditioned on which action is taken, so we need to average over all actions from a single state to get a single action-independent reward value. Each state has an expected reward for any action
@@ -205,6 +207,68 @@ The rewards in the MDP are conditioned on which action is taken, so we need to a
 ![alt text](image-31.png)
 
 ![alt text](image-32.png)
+
+
+#### MDP Value Functions
+
+![alt text](image-33.png)
+
+The state-value function tells us how much reward we can expect from the current state onward, if we follow the chosen policy.
+
+![alt text](image-34.png)
+
+we can use an average over many samples to estimate the action-value function
+
+#### MDP Bellman Equation
+
+![alt text](image-35.png)
+
+![alt text](image-36.png)
+
+They represent the same underlying value: the expected future reward
+
+![alt text](image-37.png)
+
+**States** = Open Circles; **Actions** = Closed Circles
+
+State-value function is the average of all the available action-values, weighted by how likely we are to choose them under our current policy:
+
+![alt text](image-38.png)
+
+Similarly, the action-value function is the average value of the states the agent might transition to given the chosen action, but weighted instead by their transition probabilities
+
+![alt text](image-39.png)
+
+![alt text](image-40.png)
+
+S=possible next states, P=transition probabilities
+
+So action-value is the immediate reward for taking that action, plus the expected value of the next state, over all possible successor states
+-----
+
+Expand diagram to 2 steps to get MDP bellmann equation
+
+![alt text](image-41.png)
+
+![alt text](image-42.png)
+
+---- 
+also start from an action node:
+
+![alt text](image-43.png)
+
+And expand the action-value function by substituting in the state-value function:
+![alt text](image-44.png)
+
+-----
+SO we get the **value function in terms of itself**, giving us the **MDP Bellman Equation**.
+
+![alt text](image-45.png)
+
+It implements this formula:
+![alt text](image-46.png)
+
+
 
 -----
 Tabular data about state,... vs non tabular data
