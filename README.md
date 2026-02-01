@@ -269,6 +269,38 @@ It implements this formula:
 ![alt text](image-46.png)
 
 
+### Optimal Value Functions
+![alt text](image-47.png)
+
+![](image-48.png)
+
+
+![alt text](image-49.png)
+
+### Optimal policies
+
+![alt text](image-50.png)
+
+![alt text](image-51.png)
+
+![alt text](image-52.png)
+
+![alt text](image-53.png)
+
+Finding The Optimal Action-Value Function
+
+![alt text](image-54.png)
+
+![alt text](image-55.png)
+
+
+![alt text](image-56.png)
+
+![alt text](image-57.png)
+
+![alt text](image-58.png)
+
+![alt text](image-59.png)
 
 -----
 Tabular data about state,... vs non tabular data
