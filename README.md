@@ -304,3 +304,7 @@ Finding The Optimal Action-Value Function
 
 -----
 Tabular data about state,... vs non tabular data
+
+![alt text](image-60.png)
+
+![alt text](image-61.png)
