@@ -395,3 +395,10 @@ Tabular data about state,... vs non tabular data
 ![alt text](image-104.png)
 
 ![alt text](image-105.png)
+
+![alt text](image-106.png)
+
+![alt text](image-107.png)
+
+![alt text](image-108.png)
+
