@@ -6,11 +6,13 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "ale-py>=0.11.2",
+    "gym-bandits>=0.0.1",
     "gymnasium[classic-control,toy-text]>=1.2.3",
     "icecream>=2.1.10",
     "ipympl>=0.9.8",
     "matplotlib>=3.10.8",
     "numpy>=2.2.6",
+    "scipy>=1.17.1",
     "seaborn>=0.13.2",
     "torch>=2.11.0",
 ]
