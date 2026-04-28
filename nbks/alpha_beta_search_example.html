@@ -1,0 +1,241 @@
+
+<style>
+  :root {
+    --dur: 0.3s;
+    --color-background-secondary: #f6f8fa;
+    --color-background-tertiary: #eaeef2;
+    --color-background-info: #ddf4ff;
+    --color-border-primary: #d0d7de;
+    --color-border-secondary: #d0d7de;
+    --color-border-tertiary: #d0d7de;
+    --color-border-info: #54aeff;
+    --color-text-primary: #1f2328;
+    --color-text-secondary: #656d76;
+    --color-text-info: #0969da;
+    --color-text-success: #1a7f37;
+    --color-text-danger: #d1242f;
+    --color-text-warning: #9a6700;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .step-btn {
+    padding: 7px 20px; border-radius: 6px; font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--color-border-primary);
+    background: var(--color-background-secondary); color: var(--color-text-primary);
+    transition: background var(--dur);
+  }
+  .step-btn:hover { background: var(--color-background-tertiary); }
+  .step-btn:disabled { opacity: 0.4; cursor: default; }
+  .step-btn.primary { background: var(--color-background-info); color: var(--color-text-info); border-color: var(--color-border-info); }
+  .step-btn.primary:hover { opacity: 0.85; }
+  .info-box {
+    font-size: 13px; color: var(--color-text-secondary);
+    background: var(--color-background-secondary);
+    border: 1px solid var(--color-border-tertiary);
+    border-radius: 8px; padding: 10px 14px; line-height: 1.6;
+    min-height: 52px;
+  }
+  .info-box b { color: var(--color-text-primary); }
+  .info-box .prune { color: var(--color-text-danger); font-weight: 500; }
+  .info-box .val { color: var(--color-text-warning); font-weight: 500; }
+  .progress { display: flex; gap: 6px; align-items: center; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-border-secondary); transition: background var(--dur); }
+  .dot.active { background: var(--color-text-info); }
+  .dot.done { background: var(--color-text-success); }
+</style>
+
+<svg id="tree" width="100%" viewBox="0 0 680 340" role="img">
+  <title>Alpha-beta search example</title>
+  <desc>A minimax game tree showing alpha-beta pruning. White (MAX) at root, Black (MIN) at depth 1, leaf values at depth 2.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- Edges (drawn first, below nodes) -->
+  <!-- Root → MIN_A -->
+  <line id="e-ra" x1="340" y1="91" x2="200" y2="179" stroke="var(--color-border-secondary)" stroke-width="1.5" fill="none"/>
+  <!-- Root → MIN_B -->
+  <line id="e-rb" x1="340" y1="91" x2="480" y2="179" stroke="var(--color-border-secondary)" stroke-width="1.5" fill="none"/>
+  <!-- MIN_A → L1 -->
+  <line id="e-a1" x1="200" y1="211" x2="120" y2="269" stroke="var(--color-border-secondary)" stroke-width="1.5" fill="none"/>
+  <!-- MIN_A → L2 -->
+  <line id="e-a2" x1="200" y1="211" x2="280" y2="269" stroke="var(--color-border-secondary)" stroke-width="1.5" fill="none"/>
+  <!-- MIN_B → L3 -->
+  <line id="e-b3" x1="480" y1="211" x2="400" y2="269" stroke="var(--color-border-secondary)" stroke-width="1.5" fill="none"/>
+  <!-- MIN_B → L4 (pruned) -->
+  <line id="e-b4" x1="480" y1="211" x2="560" y2="269" stroke="var(--color-border-secondary)" stroke-width="1.5" fill="none"/>
+
+  <!-- ROOT (MAX) -->
+  <g id="n-root">
+    <rect x="296" y="50" width="88" height="44" rx="8" fill="var(--color-background-secondary)" stroke="var(--color-border-secondary)" stroke-width="1.5"/>
+    <text x="340" y="68" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="11" fill="var(--color-text-secondary)">MAX (white)</text>
+    <text id="v-root" x="340" y="84" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="13" font-weight="500" fill="var(--color-text-primary)">α = –∞</text>
+  </g>
+
+  <!-- MIN_A -->
+  <g id="n-mina">
+    <rect x="156" y="169" width="88" height="44" rx="8" fill="var(--color-background-secondary)" stroke="var(--color-border-secondary)" stroke-width="1.5"/>
+    <text x="200" y="187" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="11" fill="var(--color-text-secondary)">MIN (black)</text>
+    <text id="v-mina" x="200" y="203" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="13" font-weight="500" fill="var(--color-text-primary)">β = +∞</text>
+  </g>
+
+  <!-- MIN_B -->
+  <g id="n-minb">
+    <rect x="436" y="169" width="88" height="44" rx="8" fill="var(--color-background-secondary)" stroke="var(--color-border-secondary)" stroke-width="1.5"/>
+    <text x="480" y="187" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="11" fill="var(--color-text-secondary)">MIN (black)</text>
+    <text id="v-minb" x="480" y="203" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="13" font-weight="500" fill="var(--color-text-primary)">β = +∞</text>
+  </g>
+
+  <!-- Leaf 1 (value=5) -->
+  <g id="n-l1">
+    <rect x="84" y="265" width="72" height="38" rx="8" fill="var(--color-background-secondary)" stroke="var(--color-border-secondary)" stroke-width="1.5"/>
+    <text x="120" y="284" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="15" font-weight="500" fill="var(--color-text-primary)">5</text>
+  </g>
+
+  <!-- Leaf 2 (value=3) -->
+  <g id="n-l2">
+    <rect x="244" y="265" width="72" height="38" rx="8" fill="var(--color-background-secondary)" stroke="var(--color-border-secondary)" stroke-width="1.5"/>
+    <text x="280" y="284" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="15" font-weight="500" fill="var(--color-text-primary)">3</text>
+  </g>
+
+  <!-- Leaf 3 (value=2) -->
+  <g id="n-l3">
+    <rect x="364" y="265" width="72" height="38" rx="8" fill="var(--color-background-secondary)" stroke="var(--color-border-secondary)" stroke-width="1.5"/>
+    <text x="400" y="284" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="15" font-weight="500" fill="var(--color-text-primary)">2</text>
+  </g>
+
+  <!-- Leaf 4 (pruned) -->
+  <g id="n-l4">
+    <rect x="524" y="265" width="72" height="38" rx="8" fill="var(--color-background-secondary)" stroke="var(--color-border-secondary)" stroke-width="1.5"/>
+    <text id="v-l4" x="560" y="284" text-anchor="middle" dominant-baseline="central" font-family="var(--font-sans)" font-size="15" font-weight="500" fill="var(--color-text-primary)">?</text>
+  </g>
+
+  <!-- Legend -->
+  <rect x="40" y="20" width="10" height="10" rx="2" fill="#3B8BD4" opacity="0.7"/>
+  <text x="56" y="29" font-family="var(--font-sans)" font-size="11" fill="var(--color-text-secondary)">active</text>
+  <rect x="116" y="20" width="10" height="10" rx="2" fill="#639922" opacity="0.7"/>
+  <text x="132" y="29" font-family="var(--font-sans)" font-size="11" fill="var(--color-text-secondary)">resolved</text>
+  <rect x="210" y="20" width="10" height="10" rx="2" fill="#E24B4A" opacity="0.7"/>
+  <text x="226" y="29" font-family="var(--font-sans)" font-size="11" fill="var(--color-text-secondary)">pruned</text>
+</svg>
+
+<div style="display:flex;flex-direction:column;gap:10px;padding:0 4px 8px">
+  <div class="info-box" id="info-text">
+    Press <b>Next</b> to step through the algorithm.
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+    <div class="progress" id="dots"></div>
+    <div style="display:flex;gap:8px">
+      <button class="step-btn" id="btn-reset" onclick="reset()">Reset</button>
+      <button class="step-btn primary" id="btn-next" onclick="next()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const BLUE50  = 'rgba(59,139,212,0.18)';
+const BLUE600 = '#185FA5';
+const GREEN50 = 'rgba(99,153,34,0.18)';
+const GREEN600= '#3B6D11';
+const RED50   = 'rgba(226,75,74,0.18)';
+const RED600  = '#A32D2D';
+const AMBER50 = 'rgba(239,159,39,0.18)';
+const AMBER600= '#BA7517';
+
+const steps = [
+  {
+    msg: `Explore <b>leaf A1 = 5</b>. Black (MIN) sees β = 5.`,
+    nodes: { 'n-mina': 'active', 'n-l1': 'active' },
+    edges: { 'e-a1': 'active' },
+    vals: { 'v-mina': 'β = 5', 'v-root': 'α = –∞' },
+  },
+  {
+    msg: `Explore <b>leaf A2 = 3</b>. Black prefers 3 over 5, so β = 3. MIN_A returns <span class="val">3</span>. White updates α = 3.`,
+    nodes: { 'n-mina': 'resolved', 'n-l1': 'resolved', 'n-l2': 'resolved', 'n-root': 'active' },
+    edges: { 'e-a1': 'resolved', 'e-a2': 'resolved', 'e-ra': 'resolved' },
+    vals: { 'v-mina': 'β = 3 ✓', 'v-root': 'α = 3' },
+  },
+  {
+    msg: `Explore <b>leaf B3 = 2</b>. Black sees β = 2. Now β(2) ≤ α(3): <span class="prune">white already has 3 guaranteed — black can only do ≤ 2 here.</span>`,
+    nodes: { 'n-minb': 'active', 'n-l3': 'active' },
+    edges: { 'e-rb': 'active', 'e-b3': 'active' },
+    vals: { 'v-minb': 'β = 2', 'v-root': 'α = 3' },
+  },
+  {
+    msg: `<span class="prune">✂ Prune leaf B4</span> — never evaluated. MIN_B ≤ 2, which is worse than α = 3. White ignores this subtree entirely. <b>Result: 3</b>.`,
+    nodes: { 'n-root': 'resolved', 'n-mina': 'resolved', 'n-minb': 'resolved',
+             'n-l1': 'resolved', 'n-l2': 'resolved', 'n-l3': 'resolved', 'n-l4': 'pruned' },
+    edges: { 'e-ra': 'resolved', 'e-rb': 'resolved',
+             'e-a1': 'resolved', 'e-a2': 'resolved', 'e-b3': 'resolved', 'e-b4': 'pruned' },
+    vals: { 'v-mina': 'β = 3 ✓', 'v-minb': 'β = 2', 'v-root': '= 3 ✓', 'v-l4': '✂' },
+  },
+];
+
+let cur = -1;
+
+function colorNode(id, state) {
+  const g = document.getElementById(id);
+  if (!g) return;
+  const rect = g.querySelector('rect');
+  if (!rect) return;
+  if (state === 'active')   { rect.style.fill = BLUE50;  rect.style.stroke = BLUE600; }
+  else if (state === 'resolved') { rect.style.fill = GREEN50; rect.style.stroke = GREEN600; }
+  else if (state === 'pruned')   { rect.style.fill = RED50;   rect.style.stroke = RED600; rect.style.strokeDasharray = '4 3'; }
+  else { rect.style.fill = ''; rect.style.stroke = ''; rect.style.strokeDasharray = ''; }
+}
+
+function colorEdge(id, state) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (state === 'active')   { el.style.stroke = BLUE600;  el.style.strokeWidth = '2.5'; el.style.strokeDasharray = ''; }
+  else if (state === 'resolved') { el.style.stroke = GREEN600; el.style.strokeWidth = '2'; el.style.strokeDasharray = ''; }
+  else if (state === 'pruned')   { el.style.stroke = RED600;   el.style.strokeWidth = '1.5'; el.style.strokeDasharray = '4 3'; }
+  else { el.style.stroke = ''; el.style.strokeWidth = ''; el.style.strokeDasharray = ''; }
+}
+
+function applyStep(s) {
+  Object.entries(s.nodes || {}).forEach(([id, st]) => colorNode(id, st));
+  Object.entries(s.edges || {}).forEach(([id, st]) => colorEdge(id, st));
+  Object.entries(s.vals  || {}).forEach(([id, v])  => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = v;
+  });
+  document.getElementById('info-text').innerHTML = s.msg;
+}
+
+function buildDots() {
+  const c = document.getElementById('dots');
+  c.innerHTML = '';
+  steps.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i < cur ? ' done' : i === cur ? ' active' : '');
+    c.appendChild(d);
+  });
+}
+
+function next() {
+  cur++;
+  if (cur >= steps.length) return;
+  applyStep(steps[cur]);
+  buildDots();
+  document.getElementById('btn-next').disabled = cur >= steps.length - 1;
+  document.getElementById('btn-reset').disabled = false;
+}
+
+function reset() {
+  cur = -1;
+  ['n-root','n-mina','n-minb','n-l1','n-l2','n-l3','n-l4'].forEach(id => colorNode(id, null));
+  ['e-ra','e-rb','e-a1','e-a2','e-b3','e-b4'].forEach(id => colorEdge(id, null));
+  document.getElementById('v-root').textContent = 'α = –∞';
+  document.getElementById('v-mina').textContent = 'β = +∞';
+  document.getElementById('v-minb').textContent = 'β = +∞';
+  document.getElementById('v-l4').textContent = '?';
+  document.getElementById('info-text').innerHTML = 'Press <b>Next</b> to step through the algorithm.';
+  document.getElementById('btn-next').disabled = false;
+  document.getElementById('btn-reset').disabled = true;
+  buildDots();
+}
+
+reset();
+</script>
